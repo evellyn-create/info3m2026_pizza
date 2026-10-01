@@ -4,6 +4,10 @@ from models import Usuario
 from utils import db, lm
 from flask import Blueprint
 from flask_login import login_user, logout_user, login_required, current_user
+import os, uuid
+from werkzeug.utils import secure_filename
+
+EXTENSOES_PERMITIDAS = {'png', 'jpg', 'jpeg', 'webp'}
 
 bp_usuario = Blueprint("usuario", __name__, template_folder='templates')
 
@@ -20,6 +24,20 @@ def get():
 
 @bp_usuario.route('/add', methods=['GET', 'POST'])
 def add():
+	arquivo = request.files.get('imagem_user')
+	caminho_imagem = None
+
+	if arquivo and arquivo.filename != '':
+		nome = secure_filename(arquivo.filename)
+		extensao = arquivo.filename.split('.')[-1].lower()
+		if extensao not in EXTENSOES_PERMITIDAS:
+			flash('Formato de imagem inválido. Formatos permitidos: PNG, JPG, JPEG, WEBP.', 'error')
+			return redirect(url_for('.add'))
+
+		novo_nome = f"{uuid.uuid4().hex}.{extensao}"
+		caminho = os.path.join(current_app.config['UPLOAD_FOLDER'], novo_nome)
+		arquivo.save(caminho)
+		caminho_imagem = f"uploads/{novo_nome}"  
 	if request.method=="GET":
 		return render_template('usuario_add.html')
 	elif request.method=="POST":
