@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% for usuario in usuarios %}
+  <tr>
+    <td>
+      {% if usuario.foto %}
+        <img src="{{ url_for('static', filename='uploads/usuarios/' + usuario.foto) }}" width="50" height="50" style="border-radius: 50%;">
+      {% else %}
+        <img src="{{ url_for('static', filename='img/default-avatar.png') }}" width="50" height="50" style="border-radius: 50%;">
+      {% endif %}
+    </td>
+    <td>{{ usuario.nome }}</td>
+    <td>{{ usuario.email }}</td>
+  </tr>
+{% endfor %}
+{% endblock %}

@@ -24,20 +24,20 @@ def get():
 
 @bp_usuario.route('/add', methods=['GET', 'POST'])
 def add():
-	arquivo = request.files.get('imagem_user')
+	foto = request.files.get('foto')
 	caminho_imagem = None
 
-	if arquivo and arquivo.filename != '':
-		nome = secure_filename(arquivo.filename)
-		extensao = arquivo.filename.split('.')[-1].lower()
+	if foto and foto.filename != '':
+		nome = secure_filename(foto.filename)
+		extensao = foto.filename.split('.')[-1].lower()
 		if extensao not in EXTENSOES_PERMITIDAS:
 			flash('Formato de imagem inválido. Formatos permitidos: PNG, JPG, JPEG, WEBP.', 'error')
 			return redirect(url_for('.add'))
 
-		novo_nome = f"{uuid.uuid4().hex}.{extensao}"
+		nome_foto = f"{uuid.uuid4().hex}.{extensao}"
 		caminho = os.path.join(current_app.config['UPLOAD_FOLDER'], novo_nome)
-		arquivo.save(caminho)
-		caminho_imagem = f"uploads/{novo_nome}"  
+		foto.save(caminho)
+		caminho_imagem = f"uploads/{nome_foto}"  
 	if request.method=="GET":
 		return render_template('usuario_add.html')
 	elif request.method=="POST":
@@ -53,6 +53,20 @@ def add():
 
 @bp_usuario.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
+	foto = request.file.get('foto')
+
+	if foto and foto.filename != '':
+		extensao = foto.filename.rsplit('.', 1)[1].lower()
+		nome_foto = f"{uuid.uuid4().hex}.{extensao}"
+		pasta_destino = os.path.join('static', 'uploads', 'usuarios')
+		foto_save(os.path.join(pasta_destino, nome_foto))
+		
+		usuario.foto = nome_foto
+	else: 
+		flash('Formato de imagem não suportado.')
+		return redirect(url_for('.add'))
+
+
 	u = Usuario.query.get(id)
 	if request.method=="GET":
 		return render_template('usuario_update.html', u=u)

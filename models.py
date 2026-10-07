@@ -9,6 +9,7 @@ class Usuario(db.Model, UserMixin):
     senha = db.Column(db.String(200))
     administrador = db.Column(db.Boolean, default=False, nullable=False)
     pedidos = db.relationship("Pedido", back_populates="usuario")
+    foto = db.Column(db.String(255), nullable=True)
 
     def __init__(self, nome, email, senha, administrador=False):
         self.nome = nome

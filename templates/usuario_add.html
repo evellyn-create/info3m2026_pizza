@@ -13,6 +13,27 @@
       <label class="form-control gap-2"><span class="label-text font-medium">Nome</span><input class="input input-bordered w-full" type="text" name="nome" placeholder="Nome completo" required></label>
       <label class="form-control gap-2"><span class="label-text font-medium">E-mail</span><input class="input input-bordered w-full" type="email" name="email" placeholder="voce@exemplo.com" required></label>
       <label class="form-control gap-2"><span class="label-text font-medium">Senha</span><input class="input input-bordered w-full" type="password" name="senha" placeholder="Digite uma senha" required></label>
+      
+      <form method="POST" enctype="multipart/form-data">
+        % if usuario.foto %}
+          <div>
+              <p>Foto atual:</p>
+              <img src="{{ url_for('static', filename='uploads/usuarios/' + usuario.foto) }}" alt="Foto do usuário" width="100">
+          </div>
+        {% endif %}
+    
+        <div class="form-group">
+          <label for="foto">Alterar Foto (deixe em branco para manter a atual):</label>
+          <input type="file" name="foto" accept="image/png, image/jpeg, image/webp">
+        </div>
+        <button type="submit">Salvar</button>
+        <div class="form-group">
+            <label for="foto">Foto de Perfil:</label>
+            <input type="file" name="foto" class="form-control-file" accept="image/png, image/jpeg, image/webp">
+        </div>
+        <button type="submit">Cadastrar</button>
+      </form>
+
       <label class="flex cursor-pointer items-center justify-between rounded-lg border border-base-300 p-4">
       <input class="file-input file-input-bordered w-full" type="file" name="imagem_user" accept="image/png,image/jpeg,image/webp">
         <span><span class="block font-medium">Administrador</span><span class="text-sm text-base-content/60">Permite acessar os recursos administrativos.</span></span>
